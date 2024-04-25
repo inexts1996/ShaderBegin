@@ -72,4 +72,5 @@ Shader "UnityShadersBook/Chapter7/SingleTexture"
             ENDCG
         }
     }
+    Fallback "Specular"
 }
