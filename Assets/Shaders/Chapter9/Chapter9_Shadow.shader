@@ -1,8 +1,4 @@
-// Upgrade NOTE: replaced '_LightMatrix0' with 'unity_WorldToLight'
-
-// Upgrade NOTE: replaced '_LightMatrix0' with 'unity_WorldToLight'
-
-Shader "UnityShadersBook/Chapter9/ForwardRendering"
+Shader "UnityShadersBook/Chapter9/Shadow"
 {
     Properties
     {
@@ -23,6 +19,7 @@ Shader "UnityShadersBook/Chapter9/ForwardRendering"
             #pragma multi_compile_fwdbase
 
             #include "Lighting.cginc"
+            #include "AutoLight.cginc"
 
             struct a2v
             {
@@ -35,6 +32,7 @@ Shader "UnityShadersBook/Chapter9/ForwardRendering"
                 float4 pos : SV_POSITION;
                 float3 worldNormal : TEXCOORD0;
                 float3 worldPos : TEXCOORD1;
+                SHADOW_COORDS(2)
             };
 
             fixed4 _Diffuse;
@@ -47,6 +45,7 @@ Shader "UnityShadersBook/Chapter9/ForwardRendering"
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex);
+                TRANSFER_SHADOW(o)
                 return o;
             }
 
@@ -63,8 +62,10 @@ Shader "UnityShadersBook/Chapter9/ForwardRendering"
                 fixed3 halfDir = normalize(viewDir + worldLightDir);
                 fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(worldNormal, halfDir)), _Gloss);
 
+                fixed3 shadow = SHADOW_ATTENUATION(i);
+
                 half atten = 1.0;
-                return fixed4((ambient + diffuse + specular) * atten, 1);
+                return fixed4((ambient + (diffuse + specular)* shadow) * atten , 1);
             }
             ENDCG
         }
