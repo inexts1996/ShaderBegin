@@ -1,4 +1,4 @@
-Shader "Unlit/Chapter10_Reflection"
+Shader "UnityShadersBook/Chapter10/Reflection"
 {
     Properties
     {
