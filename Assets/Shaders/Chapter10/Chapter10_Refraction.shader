@@ -61,17 +61,25 @@ Shader "UnityShadersBook/Chapter10/Refraction"
 
                 o.worldRefr = refract(-normalize(o.worldViewDir), normalize(o.worldNormal), _RefractRatio);
                 TRANSFER_SHADOW(o);
-                
+
                 return o;
             }
 
             fixed4 frag(v2f i) : SV_Target
             {
-                // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
-                // apply fog
-                UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldViewDir = normalize(i.worldViewDir);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+                fixed3 diffuse = unity_LightColor0.rgb * _Color.rgb * saturate(dot(worldNormal, worldLightDir));
+                fixed3 refr = texCUBE(_Cubemap, i.worldRefr).rgb * _RefractColor.rgb;
+
+                UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
+
+                fixed3 color = ambient + lerp(diffuse, refr,_RefractAmount) * atten;
+
+                return fixed4(color, 1);
             }
             ENDCG
         }
