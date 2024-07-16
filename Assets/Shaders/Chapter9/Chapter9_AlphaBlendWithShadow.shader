@@ -14,7 +14,7 @@ Shader "UnityShadersBook/Chapter9/AlphaBlendWithShadow"
         {
             ZWrite Off
             Blend SrcAlpha OneMinusSrcAlpha
-            HLSLPROGRAM
+            CGPROGRAM
             #pragma target 4.0
             #pragma vertex vert
             #pragma fragment frag
@@ -72,7 +72,7 @@ Shader "UnityShadersBook/Chapter9/AlphaBlendWithShadow"
 
                 return half4(ambient + diffuse * atten, texColor.a * _AlphaScale);
             }
-            ENDHLSL
+            ENDCG
         }
     } Fallback "VertexLit"
 }
