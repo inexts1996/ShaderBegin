@@ -28,7 +28,7 @@ Shader "UnityShadersBook/Chapter6/SpecularVertexLevel"
                 float3 normal : NORMAL;
             };
 
-            struct v2f
+            struct Varyings
             {
                 float4 pos : SV_POSITION;
                 fixed3 color : TEXCOORD0;
@@ -39,9 +39,9 @@ Shader "UnityShadersBook/Chapter6/SpecularVertexLevel"
             float _Gloss;
 
             
-            v2f vert (a2v v)
+            Varyings vert (a2v v)
             {
-                v2f o;
+                Varyings o;
                 
                 o.pos = UnityObjectToClipPos(v.vertex);
                
@@ -59,7 +59,7 @@ Shader "UnityShadersBook/Chapter6/SpecularVertexLevel"
                 return o;
             }
 
-            fixed4 frag(v2f i) : SV_TARGET
+            fixed4 frag(Varyings i) : SV_TARGET
             {
                 return fixed4(i.color.r, i.color.g, i.color.b, 1.0);
             }

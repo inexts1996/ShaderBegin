@@ -27,7 +27,7 @@ Shader "UnityShadersBook/Chapter9/Shadow"
                 float3 normal : NORMAL;
             };
 
-            struct v2f 
+            struct Varyings 
             {
                 float4 pos : SV_POSITION;
                 float3 worldNormal : TEXCOORD0;
@@ -39,9 +39,9 @@ Shader "UnityShadersBook/Chapter9/Shadow"
             fixed4 _Specular;
             float _Gloss;
 
-            v2f vert (a2v v)
+            Varyings vert (a2v v)
             {
-                v2f o;
+                Varyings o;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex);
@@ -49,7 +49,7 @@ Shader "UnityShadersBook/Chapter9/Shadow"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag (Varyings i) : SV_Target
             {
                 fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
 
@@ -90,7 +90,7 @@ Shader "UnityShadersBook/Chapter9/Shadow"
                 float3 normal : NORMAL;
             };
 
-            struct v2f
+            struct Varyings
             {
                 float4 pos : SV_POSITION;
                 float3 worldNormal : TEXCOORD0;
@@ -101,16 +101,16 @@ Shader "UnityShadersBook/Chapter9/Shadow"
             fixed4 _Specular;
             float _Gloss;
 
-            v2f vert (a2v v)
+            Varyings vert (a2v v)
             {
-                v2f o;
+                Varyings o;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex);
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag (Varyings i) : SV_Target
             {
 
                 #ifdef USING_DIRECTIONAL_LIGHT

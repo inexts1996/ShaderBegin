@@ -22,7 +22,7 @@ Properties
                     float3 normal : NORMAL;
                 };
                 
-                struct v2f
+                struct Varyings
                 {
                     float4 pos : SV_POSITION;
                     fixed3 color  : COLOR0;
@@ -30,9 +30,9 @@ Properties
 
                 fixed4 _Diffuse;
 
-                v2f vert(a2v v)
+                Varyings vert(a2v v)
                 {
-                    v2f o; 
+                    Varyings o; 
                     // Transform the vertex from object space to projection space 
                     o.pos = UnityObjectToClipPos( v. vertex); 
                     // Get ambient term 
@@ -48,7 +48,7 @@ Properties
 
                 }
 
-               fixed4 frag(v2f i) : SV_Target
+               fixed4 frag(Varyings i) : SV_Target
                {
                 
                    return fixed4(i.color, 1.0); 

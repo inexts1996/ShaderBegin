@@ -38,7 +38,7 @@ Shader "UnityShadersBook/Chapter10/GlassRefraction"
                 float4 tangent : TANGENT;
             };
 
-            struct v2f
+            struct Varyings
             {
                 float4 pos : SV_POSITION;
                 float4 uv : TEXCOORD0;
@@ -58,9 +58,9 @@ Shader "UnityShadersBook/Chapter10/GlassRefraction"
             sampler2D _RefractionTex;
             float4 _RefractionTex_TexelSize;
 
-            v2f vert(a2v v)
+            Varyings vert(a2v v)
             {
-                v2f o;
+                Varyings o;
 
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.scrPos = ComputeGrabScreenPos(o.pos);
@@ -79,7 +79,7 @@ Shader "UnityShadersBook/Chapter10/GlassRefraction"
                 return o;
             }
 
-            fixed4 frag(v2f i) : SV_Target
+            fixed4 frag(Varyings i) : SV_Target
             {
                 float3 worldPos = float3(i.TtoW0.w, i.TtoW1.w, i.TtoW2.w);
                 fixed3 worldViewDir = normalize(UnityWorldSpaceViewDir(worldPos));

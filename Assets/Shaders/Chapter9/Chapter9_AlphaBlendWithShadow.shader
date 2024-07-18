@@ -31,7 +31,7 @@ Shader "UnityShadersBook/Chapter9/AlphaBlendWithShadow"
                 float2 texcoord : TEXCOORD0;
             };
 
-            struct v2f
+            struct Varyings
             {
                 float4 pos : SV_POSITION;
                 float2 uv : TEXCOORD0;
@@ -45,9 +45,9 @@ Shader "UnityShadersBook/Chapter9/AlphaBlendWithShadow"
             float4 _MainTex_ST;
             half _AlphaScale;
 
-            v2f vert (a2v v)
+            Varyings vert (a2v v)
             {
-                v2f o;
+                Varyings o;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
@@ -57,7 +57,7 @@ Shader "UnityShadersBook/Chapter9/AlphaBlendWithShadow"
                 return o;
             }
 
-            half4 frag (v2f i) : SV_Target
+            half4 frag (Varyings i) : SV_Target
             {
                 half3 worldNormal = normalize(i.worldNormal);
                 half3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
