@@ -28,14 +28,16 @@ public class MyPostProcessRendererFeature : ScriptableRendererFeature
         {
             var descriptor = renderingData.cameraData.cameraTargetDescriptor;
             descriptor.depthBufferBits = 0;
-            RenderingUtils.ReAllocateIfNeeded(ref tempTexture, descriptor, name: "_TempTexture");
-            base.OnCameraSetup(cmd, ref renderingData);
+            RenderingUtils.ReAllocateIfNeeded(ref tempTexture, descriptor, FilterMode.Bilinear, TextureWrapMode.Clamp, name: "_TempTexture");
         }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             if (material == null) return;
 
+            var renderer = renderingData.cameraData.renderer;
+            source = renderer.cameraColorTargetHandle;
+            destination = renderer.cameraColorTargetHandle;
             CommandBuffer cmd = CommandBufferPool.Get("MyPostProcessEffect");
 
             if (effect == null)
@@ -47,10 +49,11 @@ public class MyPostProcessRendererFeature : ScriptableRendererFeature
 
             if (effect.IsActive())
             {
-                Blitter.BlitCameraTexture(cmd, source, tempTexture);
-                Blitter.BlitCameraTexture(cmd, tempTexture, destination, material, 0);
+                Blitter.BlitCameraTexture(cmd, this.source, this.tempTexture);
+                Blitter.BlitCameraTexture(cmd, this.tempTexture, destination, material, 0);
+                // CoreUtils.SetRenderTarget(cmd, this.destination);
 
-                material.SetFloat("_Intensity", effect.intensity.value);
+                material.SetFloat("_Brightness", effect.intensity.value);
             }
             else
             {
@@ -66,8 +69,7 @@ public class MyPostProcessRendererFeature : ScriptableRendererFeature
             tempTexture?.Release();
         }
     }
-
-
+    
     private CustomRenderPass renderPass;
     public Shader shader;
     private Material material;
@@ -84,7 +86,7 @@ public class MyPostProcessRendererFeature : ScriptableRendererFeature
     {
         if (material == null) return;
 
-        renderPass.Setup(renderer.cameraColorTargetHandle, renderer.cameraColorTargetHandle);
+        // renderPass.Setup(renderer.cameraColorTargetHandle, renderer.cameraColorTargetHandle);
         renderer.EnqueuePass(renderPass);
     }
 
